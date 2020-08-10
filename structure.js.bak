@@ -1,0 +1,11 @@
+var fs = require('fs');
+var esprima = require('esprima');
+var estraverse = require('estraverse');
+
+var filename = process.argv[2];
+console.log('Processing', filename);
+var ast = esprima.parse(fs.readFileSync(filename));
+
+//console.log(JSON.stringify(ast, null, 4));
+ast_Structure = JSON.stringify(ast, null, 4);
+fs.writeFile('/home/lab15/esprima_fun/ast/'+filename+'.ast', ast_Structure, null);

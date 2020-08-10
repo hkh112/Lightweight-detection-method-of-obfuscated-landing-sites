@@ -1,0 +1,56 @@
+var fs = require('fs');
+var esprima = require('esprima');
+var estraverse = require('estraverse');
+
+var identifier, assignment, binary, literal_raw, literal_regex, unary, update, logical;
+
+var filename = process.argv[2];
+console.log('Processing', filename);
+var ast = esprima.parse(fs.readFileSync(filename));
+estraverse.traverse(ast, {
+  enter: function(node){
+    if (node.type === 'Identifier'){
+    	identifier += ',' + node.name;
+    }
+    if (node.type === 'AssignmentExpression'){
+        assignment += ',' + node.operator;
+    }
+    if (node.type === 'BinaryExpression'){
+        binary += ',' + node.operator; 
+    }
+    if (node.type === 'Literal'){
+        literal_raw += ',' + node.raw; 
+        //if (node.regex != undefined){
+        //	literal_regex += ',' + node.regex;
+        //}
+    }
+    if (node.type === 'UnaryExpression'){
+        unary += ',' + node.operator;
+    }
+    if (node.type === 'UpdateExpression'){
+        update += ',' + node.operator;
+    }
+    if (node.type === 'LogicalExpression'){
+        logical += ',' + node.operator;
+    } 
+  }
+});
+
+identifier = identifier.slice(10);
+assignment = assignment.slice(10);
+binary = binary.slice(10);
+literal_raw = literal_raw.slice(10);
+//literal_regex = literal_regex.slice(10);
+unary =  unary.slice(10);
+update = update.slice(10);
+logical = logical.slice(10);
+
+console.log('Identifier:', identifier);
+console.log('AssignmentExpression:', assignment);
+console.log('BinaryExpression:', binary);
+console.log('Literal(raw):', literal_raw);
+//console.log('Literal(regex):', literal_regex);
+console.log('UnaryExpression:', unary);
+console.log('UpdateExpression:', update);
+console.log('LogicalExpression:', logical);
+console.log('Total:', identifier+','+assignment+','+binary+','+literal_raw+','+unary+','+update+','+logical);
